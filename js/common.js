@@ -1,5 +1,6 @@
 ﻿$(window).load(function() {
 
+
     //初始化页面高度
     /*评价*/
     setGrade();
@@ -7,7 +8,8 @@
     initSize();
     initImgSize();
 
-
+    apiUrl  = 'http://testapi.gongxiangyoupin.com/';
+    url     = 'http://' + window.location.host;
     $(window).resize(function(){
         initSize();
         initImgSize();
@@ -154,7 +156,7 @@ function initImgSize(){
         var adleft = $(window).width()/2 - $(".ad_pop .ad_main").width()/2;
         return adleft;
     },"margin-left":"0"});
-    $(".ad_pop .close").css("left", $(".ad_pop .ad_main").position().left + $(".ad_pop .ad_main").width()-15);
+    // $(".ad_pop .close").css("left", $(".ad_pop .ad_main").position().left + $(".ad_pop .ad_main").width()-15);
 }
 
 function setGrade(){
@@ -211,4 +213,56 @@ function appendVideo(appendId, length, headPic, title, path) {
             </div>';
     }
     $('#' + appendId).after(orderBody);
+}
+
+function getQueryString(name){
+    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r!=null) return unescape(r[2]); return null;
+}
+
+function getCourseList(teacher) {
+    if(!teacher){
+        teacher = getQueryString('teacher');
+    }
+    var apiUrl  = 'http://testapi.gongxiangyoupin.com/';
+    var token   = localStorage.getItem('user_token');
+    // console.log(apiUrl);
+    $.ajax({
+        url : apiUrl + "/college/course/index",
+        type: "post", //用POST方式传输
+        dataType: "json", //数据格式:JSON
+        data:{'token' : token, 'teacher' : teacher},
+        success:function (data) {
+            // console.log(data);
+            if(data.status == 'success'){
+                var courseList  = '';
+                var teacherInfo = '';
+                var teacherImg  = '';
+                var courseTitle = '';
+                $.each(data.data, function(i, val){
+                    if(i == teacher){
+                        teacherInfo = val.describe;
+                        teacherImg  = 'images/' + val.header;
+                        courseTitle = val.title;
+                    }else{
+                        courseList += '<li class="course" data-href="/' + val.url + '">\
+                        <div class="img"><img src="images/' + val.header + '" /></div>\
+                        <div class="text">\
+                        <div class="name">' + val.name + '</div>\
+                    <div class="title">《' + val.title + '》</div>\
+                    <div class="other">' + val.other + '</div>\
+                    </div>\
+                    </li>';
+                    }
+                });
+                $('.sys-name').text(courseTitle);
+                $('.detail .con img').attr('src', teacherImg);
+                $('.con .text').append(teacherInfo);
+                $('.comm-list').append(courseList);
+            }
+        },error:function (e) {
+            console.log(e);
+        }
+    })
 }

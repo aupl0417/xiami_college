@@ -39,7 +39,6 @@
 </body>
 <script>
     $(function () {
-
         $('.btn-getident').click(function () {
             var mobile = $('input[name=mobile]').val();
             console.log(mobile);
@@ -50,10 +49,8 @@
                 alert('请输入正确的手机号码！');
                 return false;
             }
-            var url = "http://api.xiamibox.com/";
-            console.log(url);
             $.ajax({
-                url : url + "sms/sendSms",
+                url : apiUrl + "sms/sendSms",
                 type: "post", //用POST方式传输
                 dataType: "json", //数据格式:JSON
                 data:{'mobile' : mobile},
@@ -69,7 +66,6 @@
         $('.submit').click(function () {
             var mobile      = $('input[name=mobile]').val();
             var mobile_code = $('input[name=mobile_code]').val();
-            console.log(mobile);
             if(mobile == ""){
                 alert('手机号码不能为空');
                 return false;
@@ -82,10 +78,9 @@
                 alert('请输入手机验证码');
                 return false;
             }
-            var url = "http://api.xiamibox.com/";
-            console.log(url);
+
             $.ajax({
-                url : url + "college/login",
+                url : apiUrl + "college/login",
                 type: "post", //用POST方式传输
                 dataType: "json", //数据格式:JSON
                 data:{'mobile' : mobile, 'mobile_code' : mobile_code},
