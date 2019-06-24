@@ -23,5 +23,9 @@ $(document).ready(function(){
             var junpUrl = $(this).data('href');
             location.href = url + junpUrl;
         });
+        $('.course').click(function () {
+            var junpUrl = $(this).data('href');
+            location.href = url + junpUrl;
+        });
     }
 });

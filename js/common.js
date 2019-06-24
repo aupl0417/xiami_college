@@ -69,6 +69,11 @@
     $("[mytag=clsPop]").bind("click",function(){
         $(this).parents(".ad_pop").hide();
     })
+
+    $('.lesson-item').click(function () {
+        var junpUrl = $(this).data('href');
+        location.href = url + junpUrl;
+    });
 })
 
 //获取url中的参数
@@ -194,11 +199,11 @@ function appendVideo(appendId, length, headPic, title, path) {
             <div class="name">' + title + '</div>\
         <div class="con">\
             <video width="100" height="100" controls="controls">\
-            <source src="' + path + '.mp4" type="video/mp4" />\
-            <source src="' + path + '.ogg" type="video/ogg" />\
-            <source src="' + path + '.webm" type="video/webm" />\
-            <object data="' + path + '.mp4" width="100" height="100">\
-            <embed src="' + path + '.swf" width="100" height="100" />\
+            <source src="' + path + i + '.mp4" type="video/mp4" />\
+            <source src="' + path + i + '.ogg" type="video/ogg" />\
+            <source src="' + path + i + '.webm" type="video/webm" />\
+            <object data="' + path + i + '.mp4" width="100" height="100">\
+            <embed src="' + path + i + '.swf" width="100" height="100" />\
             </object>\
             </video>\
             </div>\

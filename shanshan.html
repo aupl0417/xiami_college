@@ -35,7 +35,7 @@
                         <span class="time">32<sup>''</sup></span>
                     </div>
                 </div>
-                <div class="message-item">
+                <div class="message-item" id="media_mp3">
                     <div class="headpic"><span><img src="images/logo.png" /></span></div>
                     <div class="detail">
                         <div class="name">虾米学院·主持人</div>
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="message-item">
+                <!--<div class="message-item">
                     <div class="headpic"><span><img src="images/headpic_5.png" /></span></div>
                     <div class="detail">
                         <div class="name">虾米学院·主持人</div>
@@ -66,7 +66,7 @@
                     </div>
                 </div>
                 <div class="message-item">
-                    <div class="headpic"><span><img src="images/headpic_1.png" /></span></div>
+                    <div class="headpic"><span><img src="images/headpic_5.png" /></span></div>
                     <div class="detail">
                         <div class="name">虾米学院·主持人</div>
                         <div class="con">
@@ -80,7 +80,7 @@
                             </video>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
             <div class="panelMore">
                 <h4>更多课程</h4>
@@ -127,7 +127,7 @@
                                     <div class="other">2019-06-05 16:56</div>
                                 </div>
                             </li>
-                            <li class="course" data-href="/zhongxiaopin.html">
+                            <li class="course" data-href="/zhongxiaoping.html">
                                 <div class="img"><img src="images/bill6.png" /></div>
                                 <div class="text">
                                     <div class="name">特邀导师·钟小平</div>
@@ -158,4 +158,11 @@
         </div>
     </div>
 </body>
+<script>
+    window.onload = function () {
+        appendMp3('media_mp3', 27, 'headpic_5.png', '虾米学院·主持人', 'shanshan/');
+        appendVideo('message-mp3-27', 1, 'headpic_5.png', '虾米学院·主持人', './media/shanshan/');
+    }
+
+</script>
 </html>
