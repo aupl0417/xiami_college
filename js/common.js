@@ -236,6 +236,7 @@ function getCourseList(teacher) {
         success:function (data) {
             // console.log(data);
             if(data.status == 'success'){
+                var teachers = ['liuboxi', 'liuxiaojie', 'ouyangjia', 'jiajia', 'shanshan', 'zhongxiaoping', 'zhangsui', 'xiaoyan'];
                 var courseList  = '';
                 var teacherInfo = '';
                 var teacherImg  = '';
@@ -245,6 +246,9 @@ function getCourseList(teacher) {
                         teacherInfo = val.describe;
                         teacherImg  = 'images/' + val.header;
                         courseTitle = val.title;
+                        console.log(teacher);
+                        appendMp3('media_mp3', val.mp3, val.headPic, val.name, val.mediaPath);
+                        appendVideo('message-mp3-' + val.mp3, val.video, val.headPic, val.name, './media/' + val.mediaPath);
                     }else{
                         courseList += '<li class="course" data-href="/' + val.url + '">\
                         <div class="img"><img src="images/' + val.header + '" /></div>\
@@ -260,6 +264,7 @@ function getCourseList(teacher) {
                 $('.detail .con img').attr('src', teacherImg);
                 $('.con .text').append(teacherInfo);
                 $('.comm-list').append(courseList);
+
             }
         },error:function (e) {
             console.log(e);
