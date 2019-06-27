@@ -1,8 +1,8 @@
 $(document).ready(function(){
     var url     = 'http://' + window.location.host;
     var apiUrl  = 'http://testapi.gongxiangyoupin.com/';
+    // var apiUrl  = 'http://api.xiamibox.com/';
     checkLogin();
-    getCourseList();
     function checkLogin() {
         var token   = localStorage.getItem('user_token');
         if(!token || token == null || token == 'undefined'){
@@ -34,4 +34,8 @@ $(document).ready(function(){
         });
 
     }
+});
+
+$(function () {
+    getCourseList();
 });

@@ -9,6 +9,7 @@
     initImgSize();
 
     apiUrl  = 'http://testapi.gongxiangyoupin.com/';
+    // apiUrl  = 'http://api.xiamibox.com/';
     url     = 'http://' + window.location.host;
     $(window).resize(function(){
         initSize();
@@ -76,6 +77,10 @@
         var junpUrl = $(this).data('href');
         location.href = url + junpUrl;
     });
+    //仿单选框、复选框
+    $("body").on("click",".fa-back", function(){
+        window.history.back(-1);
+    })
 })
 
 //获取url中的参数
@@ -174,7 +179,7 @@ function setGrade(){
     })
 }
 
-function appendMp3(appendId, length, headPic, title, path) {
+function appendMp3(appendId, length, headPic, title, path, textContent) {
     var orderBody = '';
     for(var i = 1; i <= length; i++){
         orderBody += '<div class="message-item" id="message-mp3-' + i + '">\
@@ -188,6 +193,45 @@ function appendMp3(appendId, length, headPic, title, path) {
             </div>\
             </div>\
             </div>';
+        // console.log(textContent);
+        if(textContent[i]){
+            // console.log(textContent[i]);
+            var k = 0;
+            if(textContent[i]['text']){
+                for(var j = 0; j <= textContent[i]['text'].length - 1; j ++){
+                    k += 1;
+                    orderBody += '<div class="message-item" id="message-mp3-text-' + i + '-' + k + '">\
+                        <div class="headpic"><span><img src="images/' + headPic + '" /></span></div>\
+                        <div class="detail">\
+                        <div class="name">' + title + '</div>\
+                    <div class="con">\
+                        <div class="text">'+ textContent[i]['text'][j] + '</div>\
+                        </div>\
+                        </div>\
+                        </div>';
+                }
+            }
+
+            if(textContent[i]['img']){
+                for(var j = 0; j <= textContent[i]['img'].length - 1; j ++){
+                    k += 1;
+                    // console.log(textContent[i]['img'][j]);
+                    orderBody += '<div class="message-item" id="message-mp3-text-' + i + '-' + k + '">\
+                    <div class="headpic"><span><img src="images/' + headPic + '" /></span></div>\
+                    <div class="detail">\
+                    <div class="name">' + title + '</div>\
+                <div class="con">\
+                    <img src="' + textContent[i]['img'][j] + '" />\
+                    </div>\
+                    <span class="time"><sup></sup></span>\
+                    </div>\
+                    </div>';
+                }
+
+            }
+
+
+        }
     }
     $('#' + appendId).after(orderBody);
 }
@@ -200,7 +244,7 @@ function appendVideo(appendId, length, headPic, title, path) {
             <div class="detail">\
             <div class="name">' + title + '</div>\
         <div class="con">\
-            <video width="100" height="100" controls="controls">\
+            <video width="100%" height="100%" controls="controls">\
             <source src="' + path + i + '.mp4" type="video/mp4" />\
             <source src="' + path + i + '.ogg" type="video/ogg" />\
             <source src="' + path + i + '.webm" type="video/webm" />\
@@ -226,6 +270,7 @@ function getCourseList(teacher) {
         teacher = getQueryString('teacher');
     }
     var apiUrl  = 'http://testapi.gongxiangyoupin.com/';
+    // var apiUrl  = 'http://api.xiamibox.com/';
     var token   = localStorage.getItem('user_token');
     // console.log(apiUrl);
     $.ajax({
@@ -240,15 +285,16 @@ function getCourseList(teacher) {
                 var courseList  = '';
                 var teacherInfo = '';
                 var teacherImg  = '';
-                var courseTitle = '';
+                var courseTitle = '商学院系统';
                 $.each(data.data, function(i, val){
                     if(i == teacher){
                         teacherInfo = val.describe;
                         teacherImg  = 'images/' + val.header;
                         courseTitle = val.title;
-                        console.log(teacher);
-                        appendMp3('media_mp3', val.mp3, val.headPic, val.name, val.mediaPath);
-                        appendVideo('message-mp3-' + val.mp3, val.video, val.headPic, val.name, './media/' + val.mediaPath);
+                        //id="message-mp3-text-' + i + '-' + k + '"
+                        var id = val.textContent[val.mp3]['text'].length + val.textContent[val.mp3]['img'].length;
+                        appendMp3('media_mp3', val.mp3, val.headPic, val.name, val.mediaPath, val.textContent);
+                        appendVideo('message-mp3-text-' + val.mp3 + '-' + id, val.video, val.headPic, val.name, './media/' + val.mediaPath);
                     }else{
                         courseList += '<li class="course" data-href="/' + val.url + '">\
                         <div class="img"><img src="images/' + val.header + '" /></div>\
@@ -261,8 +307,8 @@ function getCourseList(teacher) {
                     }
                 });
                 $('.sys-name').text(courseTitle);
-                $('.detail .con img').attr('src', teacherImg);
-                $('.con .text').append(teacherInfo);
+                $('.detail .header-pic img').attr('src', teacherImg);
+                $('.con .desc').append(teacherInfo);
                 $('.comm-list').append(courseList);
 
             }
