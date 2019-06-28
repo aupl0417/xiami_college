@@ -8,8 +8,8 @@
     initSize();
     initImgSize();
 
-    apiUrl  = 'http://testapi.gongxiangyoupin.com/';
-    // apiUrl  = 'http://api.xiamibox.com/';
+    // apiUrl  = 'http://testapi.gongxiangyoupin.com/';
+    apiUrl  = 'http://api.xiamibox.com/';
     url     = 'http://' + window.location.host;
     $(window).resize(function(){
         initSize();
@@ -179,7 +179,7 @@ function setGrade(){
     })
 }
 
-function appendMp3(appendId, length, headPic, title, path, textContent) {
+function appendMp3(appendId, length, headPic, title, path, textContent, hasTopText) {
     var orderBody = '';
     for(var i = 1; i <= length; i++){
         orderBody += '<div class="message-item" id="message-mp3-' + i + '">\
@@ -194,68 +194,72 @@ function appendMp3(appendId, length, headPic, title, path, textContent) {
             </div>\
             </div>';
         // console.log(textContent);
+        var textBody = '';
         if(textContent[i]){
-            // console.log(textContent[i]);
             var k = 0;
-            if(textContent[i]['text']){
-                for(var j = 0; j <= textContent[i]['text'].length - 1; j ++){
-                    k += 1;
-                    orderBody += '<div class="message-item" id="message-mp3-text-' + i + '-' + k + '">\
+            if(i == '20'){
+                console.log(textContent[i]);
+            }
+            $.each(textContent[i], function(key, val){
+                var r = /^img_|text_img_/;　　//判断是否为正整数
+                r.test(key);
+                console.log(r.test(key) + '==' + key);
+                k += 1;
+                if(!r.test(key)){
+                    textBody += '<div class="message-item" id="message-mp3-text-' + i + '-' + k + '">\
                         <div class="headpic"><span><img src="images/' + headPic + '" /></span></div>\
                         <div class="detail">\
                         <div class="name">' + title + '</div>\
                     <div class="con">\
-                        <div class="text">'+ textContent[i]['text'][j] + '</div>\
+                        <div class="text">'+ val + '</div>\
                         </div>\
                         </div>\
                         </div>';
-                }
-            }
-
-            if(textContent[i]['img']){
-                for(var j = 0; j <= textContent[i]['img'].length - 1; j ++){
-                    k += 1;
-                    // console.log(textContent[i]['img'][j]);
-                    orderBody += '<div class="message-item" id="message-mp3-text-' + i + '-' + k + '">\
+                }else{
+                    textBody += '<div class="message-item" id="message-mp3-text-' + i + '-' + k + '">\
                     <div class="headpic"><span><img src="images/' + headPic + '" /></span></div>\
                     <div class="detail">\
                     <div class="name">' + title + '</div>\
                 <div class="con">\
-                    <img src="' + textContent[i]['img'][j] + '" />\
+                    <img src="' + val + '" />\
                     </div>\
                     <span class="time"><sup></sup></span>\
                     </div>\
                     </div>';
                 }
+            });
 
+            if(hasTopText && i == 1){
+                orderBody = textBody + orderBody;
+            }else{
+                orderBody += textBody;
             }
-
-
         }
     }
     $('#' + appendId).after(orderBody);
 }
 
-function appendVideo(appendId, length, headPic, title, path) {
+function appendVideo(appendId, key, headPic, title, path) {
     var orderBody = '';
-    for(var i = 1; i <= length; i++){
-        orderBody += '<div class="message-item" id="message-mp3-' + i + '">\
+
+        orderBody += '<div class="message-item" id="' + appendId + '-' + key + '">\
             <div class="headpic"><span><img src="images/' + headPic + '" /></span></div>\
             <div class="detail">\
             <div class="name">' + title + '</div>\
         <div class="con">\
             <video width="100%" height="100%" controls="controls">\
-            <source src="' + path + i + '.mp4" type="video/mp4" />\
-            <source src="' + path + i + '.ogg" type="video/ogg" />\
-            <source src="' + path + i + '.webm" type="video/webm" />\
-            <object data="' + path + i + '.mp4" width="100" height="100">\
-            <embed src="' + path + i + '.swf" width="100" height="100" />\
+            <source src="' + path + '.mp4" type="video/mp4" />\
+            <source src="' + path + '.ogg" type="video/ogg" />\
+            <source src="' + path + '.webm" type="video/webm" />\
+            <object data="' + path + '.mp4" width="100" height="100">\
+            <embed src="' + path + '.swf" width="100" height="100" />\
             </object>\
             </video>\
             </div>\
             </div>\
             </div>';
-    }
+
+    console.log(orderBody);
     $('#' + appendId).after(orderBody);
 }
 
@@ -269,8 +273,8 @@ function getCourseList(teacher) {
     if(!teacher){
         teacher = getQueryString('teacher');
     }
-    var apiUrl  = 'http://testapi.gongxiangyoupin.com/';
-    // var apiUrl  = 'http://api.xiamibox.com/';
+    // var apiUrl  = 'http://testapi.gongxiangyoupin.com/';
+    var apiUrl  = 'http://api.xiamibox.com/';
     var token   = localStorage.getItem('user_token');
     // console.log(apiUrl);
     $.ajax({
@@ -291,10 +295,14 @@ function getCourseList(teacher) {
                         teacherInfo = val.describe;
                         teacherImg  = 'images/' + val.header;
                         courseTitle = val.title;
-                        //id="message-mp3-text-' + i + '-' + k + '"
-                        var id = val.textContent[val.mp3]['text'].length + val.textContent[val.mp3]['img'].length;
-                        appendMp3('media_mp3', val.mp3, val.headPic, val.name, val.mediaPath, val.textContent);
-                        appendVideo('message-mp3-text-' + val.mp3 + '-' + id, val.video, val.headPic, val.name, './media/' + val.mediaPath);
+                        appendMp3('media_mp3', val.mp3, val.headPic, val.name, val.mediaPath, val.textContent, val.hasTextTop);
+                        if(val.video){
+                            $.each(val.video, function(idKey, idValue){
+                                console.log(idKey);
+                                console.log(idValue);
+                                appendVideo(idValue, i, val.headPic, val.name, './media/' + val.mediaPath + (idKey + 1));
+                            });
+                        }
                     }else{
                         courseList += '<li class="course" data-href="/' + val.url + '">\
                         <div class="img"><img src="images/' + val.header + '" /></div>\
