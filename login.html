@@ -7,6 +7,7 @@
     <title>欢迎访问</title>
     <script src="js/jQuery-2.1.3.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="plugins/bootstrap/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+    <script src="./js/layer/layer.js" type="text/javascript" charset="utf-8"></script>
     <script charset="utf-8">document.write("<script type='text/javascript' src='./js/footer.js?v="+Math.random()+"'><\/script>");</script>
     <script>document.write("<script type='text/javascript' src='./js/common.js?v="+Math.random()+"'><\/script>");</script>
     <link rel="stylesheet" type="text/css" href="plugins/bootstrap/bootstrap.css" />
@@ -41,12 +42,11 @@
     $(function () {
         $('.btn-getident').click(function () {
             var mobile = $('input[name=mobile]').val();
-            console.log(mobile);
             if(mobile == ""){
-                alert('手机号码不能为空');
+                layer.msg('手机号码不能为空');
                 return false;
             }else if(!checkPhone(mobile)){
-                alert('请输入正确的手机号码！');
+                layer.msg('请输入正确的手机号码！');
                 return false;
             }
             $.ajax({
@@ -55,7 +55,7 @@
                 dataType: "json", //数据格式:JSON
                 data:{'mobile' : mobile},
                 success:function (data) {
-                    console.log(data);
+                    layer.msg(data.info);
                 },error:function (e) {
                     alert(2);
                     console.log(e);
@@ -67,18 +67,18 @@
             var mobile      = $('input[name=mobile]').val();
             var mobile_code = $('input[name=mobile_code]').val();
             if(mobile == ""){
-                alert('手机号码不能为空');
+                layer.msg('手机号码不能为空');
                 return false;
             }else if(!checkPhone(mobile)){
-                alert('请输入正确的手机号码！');
+                layer.msg('请输入正确的手机号码！');
                 return false;
             }
 
             if(mobile_code == ''){
-                alert('请输入手机验证码');
+                layer.msg('请输入手机验证码');
                 return false;
             }
-
+            var index = layer.load(2, {time: 10 * 1000}); //又换了种风格，并且设定最长等待10秒
             $.ajax({
                 url : apiUrl + "college/login",
                 type: "post", //用POST方式传输
@@ -86,18 +86,16 @@
                 data:{'mobile' : mobile, 'mobile_code' : mobile_code},
                 success:function (data) {
                     if(data.status == 'success'){
-                        console.log(data);
                         localStorage.setItem('user_info', JSON.stringify(data));
                         localStorage.setItem('user_token', data.data.token);
                         var user_info = localStorage.getItem('user_info');
                         user_info = $.parseJSON(user_info);
-//                        var token = localStorage.getItem('user_token');
-                        console.log(user_info);
-//                        console.log(token);
+                        layer.close(index);
                         location.href = 'http://' + window.location.host + '/index.html';
+                    }else{
+                        layer.msg(data.info);
                     }
                 },error:function (e) {
-                    alert(2);
                     console.log(e);
                 }
             })

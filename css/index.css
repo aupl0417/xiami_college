@@ -308,6 +308,7 @@ body {
     border-radius: .3em;
     background: #fff;
     overflow: hidden;
+    width:180px;
 }
 
 .message-item .detail .text{

@@ -1,7 +1,7 @@
 $(document).ready(function(){
     var url     = 'http://' + window.location.host;
-    // var apiUrl  = 'http://testapi.gongxiangyoupin.com/';
-    var apiUrl  = 'http://api.xiamibox.com/';
+    var apiUrl  = 'http://testapi.gongxiangyoupin.com/';
+    // var apiUrl  = 'http://api.xiamibox.com/';
     checkLogin();
     function checkLogin() {
         var token   = localStorage.getItem('user_token');

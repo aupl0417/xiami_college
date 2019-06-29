@@ -8,8 +8,8 @@
     initSize();
     initImgSize();
 
-    // apiUrl  = 'http://testapi.gongxiangyoupin.com/';
-    apiUrl  = 'http://api.xiamibox.com/';
+    apiUrl  = 'http://testapi.gongxiangyoupin.com/';
+    // apiUrl  = 'http://api.xiamibox.com/';
     url     = 'http://' + window.location.host;
     $(window).resize(function(){
         initSize();
@@ -187,7 +187,7 @@ function appendMp3(appendId, length, headPic, title, path, textContent, hasTopTe
                 <div class="detail">\
                 <div class="name">' + title + '</div>\
             <div class="con">\
-                <audio src="./media/' + path + i + '.mp3" controls>\
+                <audio src="./media/' + path + i + '.mp3" controls="controls" preload="metadata">\
             当浏览器不支持时，此处给出提示\
             </audio>\
             </div>\
@@ -197,13 +197,9 @@ function appendMp3(appendId, length, headPic, title, path, textContent, hasTopTe
         var textBody = '';
         if(textContent[i]){
             var k = 0;
-            if(i == '20'){
-                console.log(textContent[i]);
-            }
             $.each(textContent[i], function(key, val){
                 var r = /^img_|text_img_/;　　//判断是否为正整数
                 r.test(key);
-                console.log(r.test(key) + '==' + key);
                 k += 1;
                 if(!r.test(key)){
                     textBody += '<div class="message-item" id="message-mp3-text-' + i + '-' + k + '">\
@@ -236,12 +232,12 @@ function appendMp3(appendId, length, headPic, title, path, textContent, hasTopTe
             }
         }
     }
+
     $('#' + appendId).after(orderBody);
 }
 
 function appendVideo(appendId, key, headPic, title, path) {
     var orderBody = '';
-
         orderBody += '<div class="message-item" id="' + appendId + '-' + key + '">\
             <div class="headpic"><span><img src="images/' + headPic + '" /></span></div>\
             <div class="detail">\
@@ -258,8 +254,6 @@ function appendVideo(appendId, key, headPic, title, path) {
             </div>\
             </div>\
             </div>';
-
-    console.log(orderBody);
     $('#' + appendId).after(orderBody);
 }
 
@@ -270,11 +264,12 @@ function getQueryString(name){
 }
 
 function getCourseList(teacher) {
+    var index = layer.load(2, {time: 10 * 1000}); //又换了种风格，并且设定最长等待10秒
     if(!teacher){
         teacher = getQueryString('teacher');
     }
-    // var apiUrl  = 'http://testapi.gongxiangyoupin.com/';
-    var apiUrl  = 'http://api.xiamibox.com/';
+    var apiUrl  = 'http://testapi.gongxiangyoupin.com/';
+    // var apiUrl  = 'http://api.xiamibox.com/';
     var token   = localStorage.getItem('user_token');
     // console.log(apiUrl);
     $.ajax({
@@ -285,7 +280,6 @@ function getCourseList(teacher) {
         success:function (data) {
             // console.log(data);
             if(data.status == 'success'){
-                var teachers = ['liuboxi', 'liuxiaojie', 'ouyangjia', 'jiajia', 'shanshan', 'zhongxiaoping', 'zhangsui', 'xiaoyan'];
                 var courseList  = '';
                 var teacherInfo = '';
                 var teacherImg  = '';
@@ -295,30 +289,30 @@ function getCourseList(teacher) {
                         teacherInfo = val.describe;
                         teacherImg  = 'images/' + val.header;
                         courseTitle = val.title;
+                        $('.sys-name').text(courseTitle);
+                        $('.detail .header-pic img').attr('src', teacherImg);
+                        $('.con .desc').append(teacherInfo);
                         appendMp3('media_mp3', val.mp3, val.headPic, val.name, val.mediaPath, val.textContent, val.hasTextTop);
                         if(val.video){
                             $.each(val.video, function(idKey, idValue){
-                                console.log(idKey);
-                                console.log(idValue);
                                 appendVideo(idValue, i, val.headPic, val.name, './media/' + val.mediaPath + (idKey + 1));
                             });
                         }
                     }else{
                         courseList += '<li class="course" data-href="/' + val.url + '">\
-                        <div class="img"><img src="images/' + val.header + '" /></div>\
-                        <div class="text">\
-                        <div class="name">' + val.name + '</div>\
-                    <div class="title">《' + val.title + '》</div>\
-                    <div class="other">' + val.other + '</div>\
-                    </div>\
-                    </li>';
+                            <div class="img"><img src="images/' + val.header + '" /></div>\
+                            <div class="text">\
+                            <div class="name">' + val.name + '</div>\
+                        <div class="title">《' + val.title + '》</div>\
+                        <div class="other">' + val.other + '</div>\
+                        </div>\
+                        </li>';
                     }
                 });
-                $('.sys-name').text(courseTitle);
-                $('.detail .header-pic img').attr('src', teacherImg);
-                $('.con .desc').append(teacherInfo);
-                $('.comm-list').append(courseList);
 
+                $('.comm-list').append(courseList);
+                //关闭
+                layer.close(index);
             }
         },error:function (e) {
             console.log(e);
