@@ -40,7 +40,12 @@
 </body>
 <script>
     $(function () {
+        var countTime;
+        var obj;
+        var interval;
         $('.btn-getident').click(function () {
+            obj = $(this);
+            countTime = 59;
             var mobile = $('input[name=mobile]').val();
             if(mobile == ""){
                 layer.msg('手机号码不能为空');
@@ -56,12 +61,33 @@
                 data:{'mobile' : mobile},
                 success:function (data) {
                     layer.msg(data.info);
-                },error:function (e) {
-                    alert(2);
-                    console.log(e);
+                    if(data.status == 'success'){
+                        // 定时器
+                        interval = setInterval(function () {
+                            settime(obj)
+                        }, 1000);
+
+                    }
+                },
+                error:function (e) {
+                    layer.msg('网络错误');
                 }
-            })
+            });
         });
+
+        // 倒计时
+        function settime(obj) {
+            if(countTime == 0){//
+                obj.attr('disabled',false);
+                obj.text('获取验证码');
+                clearInterval(interval);
+                return;
+            }else{// 倒计时开始
+                obj.attr('disabled',true);
+                obj.text('重新发送(' + countTime + ')');
+                countTime--;
+            }
+        }
 
         $('.submit').click(function () {
             var mobile      = $('input[name=mobile]').val();
@@ -85,12 +111,12 @@
                 dataType: "json", //数据格式:JSON
                 data:{'mobile' : mobile, 'mobile_code' : mobile_code},
                 success:function (data) {
+                    layer.close(index);
                     if(data.status == 'success'){
                         localStorage.setItem('user_info', JSON.stringify(data));
                         localStorage.setItem('user_token', data.data.token);
                         var user_info = localStorage.getItem('user_info');
                         user_info = $.parseJSON(user_info);
-                        layer.close(index);
                         location.href = 'http://' + window.location.host + '/index.html';
                     }else{
                         layer.msg(data.info);

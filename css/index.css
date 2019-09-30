@@ -308,6 +308,13 @@ body {
     border-radius: .3em;
     background: #fff;
     overflow: hidden;
+}
+
+.message-item .detail .header-pic{
+    display: inline-block;
+    border-radius: .3em;
+    background: #fff;
+    overflow: hidden;
     width:180px;
 }
 

@@ -8,7 +8,7 @@
     initSize();
     initImgSize();
 
-    apiUrl  = 'http://testapi.gongxiangyoupin.com/';
+    apiUrl  = 'http://api.gongxiangyoupin.com/';
     // apiUrl  = 'http://api.xiamibox.com/';
     url     = 'http://' + window.location.host;
     $(window).resize(function(){
@@ -80,7 +80,19 @@
     //仿单选框、复选框
     $("body").on("click",".fa-back", function(){
         window.history.back(-1);
-    })
+    });
+    var audio = document.getElementsByTagName('audio');
+    // console.log(audio);
+    $.each(audio, function (a, b) {
+        console.log(a);
+        console.log(b);
+    });
+    //仿单选框、复选框
+    $("body").on("click",".con", function(){
+        var audio = document.getElementsByTagName('audio');
+        console.log(audio);
+        audioPause();
+    });
 })
 
 //获取url中的参数
@@ -231,6 +243,7 @@ function appendMp3(appendId, length, headPic, title, path, textContent, hasTopTe
                 orderBody += textBody;
             }
         }
+        audioPause(i);
     }
 
     $('#' + appendId).after(orderBody);
@@ -264,11 +277,10 @@ function getQueryString(name){
 }
 
 function getCourseList(teacher) {
-    var index = layer.load(2, {time: 10 * 1000}); //又换了种风格，并且设定最长等待10秒
     if(!teacher){
         teacher = getQueryString('teacher');
     }
-    var apiUrl  = 'http://testapi.gongxiangyoupin.com/';
+    var apiUrl  = 'http://api.gongxiangyoupin.com/';
     // var apiUrl  = 'http://api.xiamibox.com/';
     var token   = localStorage.getItem('user_token');
     // console.log(apiUrl);
@@ -312,10 +324,22 @@ function getCourseList(teacher) {
 
                 $('.comm-list').append(courseList);
                 //关闭
-                layer.close(index);
             }
         },error:function (e) {
             console.log(e);
         }
     })
+}
+
+function audioPause(i) {
+    $('#message-mp3-' + i).click(function () {
+        console.log('aa');
+        var audio = $(this).getElementsByTagName('audio');
+        console.log(audio);
+    });
+
+    // var audio = $('#message-mp3-' + i).getElementsByTagName('audio');
+    // console.log(audio);
+    // var audio = document.getElementsByTagName('audio');
+
 }
